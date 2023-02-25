@@ -18,6 +18,7 @@ from tqdm import tqdm
 import time
 from scipy import stats
 import spsolve
+import astar
 
 n = 30 # number of vertices
 max_edge = 100
@@ -49,8 +50,6 @@ def swap(mats, i, j):
         mats[idx] = x
     return mats
 
-
-
 def compute_rewards(preds, adjs, res, t=True):
     path_preds, dist_pred = eval_path(adjs.data.cpu(), preds)
     rewards = []
@@ -63,35 +62,35 @@ def compute_rewards(preds, adjs, res, t=True):
     # rewards = [1.0 if x else 0. for x in rewards]
     return np.array(rewards)
 
-# def eval_path(adjs, preds, t=True):
-#     if t == True:
-#         adjs = transform(adjs)
-#     # adjs = adjs.squeeze(dim=1)
-#     paths, dists = spsolve.ceval_path(adjs.numpy(), preds.numpy(), n)
-#     return paths, dists
-
 def eval_path(adjs, preds, t=True):
-    paths = []
-    dists = []
-    for idx, (adj, pred) in enumerate(zip(adjs, preds)):
-        path = {str(i): None for i in range(n)}
-        def neighbors(n):
-            index = np.where(adj[n,:] != 0)[0]
-            for i in index:
-                yield i
+    if t == True:
+        adjs = transform(adjs)
+    # adjs = adjs.squeeze(dim=1)
+    paths, dists = spsolve.ceval_path(adjs.numpy(), preds.numpy(), n)
+    return paths, dists
 
-        def distance(n1, n2):
-            return adj[n1, n2]
+# def eval_path(adjs, preds, t=True):
+#     paths = []
+#     dists = []
+#     for idx, (adj, pred) in enumerate(zip(adjs, preds)):
+#         path = {str(i): None for i in range(n)}
+#         def neighbors(n):
+#             index = np.where(adj[n,:] != 0)[0]
+#             for i in index:
+#                 yield i
 
-        def cost(n, goal):
-            return pred[n]
+#         def distance(n1, n2):
+#             return adj[n1, n2]
 
-        for k in range(n):
-            p = list(astar.find_path(k, 0, neighbors_fnct=neighbors,
-                        heuristic_cost_estimate_fnct=cost, distance_between_fnct=distance))
-            path[str(k)] = p
-        paths.append(path)
-    return paths, None
+#         def cost(n, goal):
+#             return pred[n]
+
+#         for k in range(n):
+#             p = list(astar.find_path(k, 0, neighbors_fnct=neighbors,
+#                         heuristic_cost_estimate_fnct=cost, distance_between_fnct=distance))
+#             path[str(k)] = p
+#         paths.append(path)
+#     return paths, None
 
 # preds: estimated distance from i to 0
 # Note: this adjs is normalized, see dataset.py
