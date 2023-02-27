@@ -41,31 +41,31 @@ train_set = MathExprDataset('train', numSamples=int(10000*opt.data_used), random
 test_set = MathExprDataset('test')
 
 #### generate ground-truth labels
-# tmp_dataloader = torch.utils.data.DataLoader(train_set, batch_size=opt.batch_size, 
-                        # shuffle=False,
-                        # num_workers=2, collate_fn=MathExpr_collate)
+tmp_dataloader = torch.utils.data.DataLoader(train_set, batch_size=opt.batch_size, 
+                        shuffle=False,
+                        num_workers=2, collate_fn=MathExpr_collate)
 
 #### generate random labels
-# results = []
-# for batch_idx, sample in enumerate(tmp_dataloader):
-#     results.append(sample['res'])
-# results = torch.cat(results, dim=0)
-# labels = torch.zeros(size=(len(train_set),7)).long()
-# num_list = [0,2,4,6]
-# op_list = [1,3,5]
-# labels[:, num_list] = torch.randint(1, 10, size=(len(train_set),4))
-# labels[:, op_list] = torch.randint(10, 14, size=(len(train_set),3))
-# for idx, ite in enumerate(zip(labels, results)):
-#     print(idx)
-#     label, res = ite
-#     tmp = label[op_list]
-#     sat, sol = init_check(tmp.tolist(), res.item())
-#     while sat == False:
-#         tmp = torch.randint(10, 14, size=(3,))
-#         sat, sol = init_check(tmp.tolist(), res.item())
-#         labels[idx, op_list] = tmp
-#     labels[idx, num_list] = torch.Tensor(sol).long()
-# torch.save(labels, './data/random_labels.pt')
+results = []
+for batch_idx, sample in enumerate(tmp_dataloader):
+    results.append(sample['res'])
+results = torch.cat(results, dim=0)
+labels = torch.zeros(size=(len(train_set),7)).long()
+num_list = [0,2,4,6]
+op_list = [1,3,5]
+labels[:, num_list] = torch.randint(1, 10, size=(len(train_set),4))
+labels[:, op_list] = torch.randint(10, 14, size=(len(train_set),3))
+for idx, ite in enumerate(zip(labels, results)):
+    print(idx)
+    label, res = ite
+    tmp = label[op_list]
+    sat, sol = init_check(tmp.tolist(), res.item())
+    while sat == False:
+        tmp = torch.randint(10, 14, size=(3,))
+        sat, sol = init_check(tmp.tolist(), res.item())
+        labels[idx, op_list] = tmp
+    labels[idx, num_list] = torch.Tensor(sol).long()
+torch.save(labels, './data/random_labels.pt')
 
 pseudo_labels = torch.load('./data/random_labels.pt')
 # pseudo_labels = labels.clone()
