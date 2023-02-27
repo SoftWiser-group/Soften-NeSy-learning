@@ -46,34 +46,34 @@ train_set = ShortPathDataset('train')
 test_set = ShortPathDataset('test')
 
 # save gt paths
-# train_graphs = torch.load('./data/train_graphs.pt')
-# test_graphs = torch.load('./data/test_graphs.pt')
+train_graphs = torch.load('./data/train_graphs.pt')
+test_graphs = torch.load('./data/test_graphs.pt')
 
-# gts = []
-# for batch_idx, graph in enumerate(train_graphs):
-#     gts.append(graph.paths)
-# torch.save(gts, './data/train_paths.pt')
-# gts = []
-# for batch_idx, graph in enumerate(test_graphs):
-#     gts.append(graph.paths)
-# torch.save(gts, './data/test_paths.pt')
+gts = []
+for batch_idx, graph in enumerate(train_graphs):
+    gts.append(graph.paths)
+torch.save(gts, './data/train_paths.pt')
+gts = []
+for batch_idx, graph in enumerate(test_graphs):
+    gts.append(graph.paths)
+torch.save(gts, './data/test_paths.pt')
 
-# tmp_dataloader = torch.utils.data.DataLoader(train_set, batch_size=opt.batch_size, 
-#                         shuffle=False, num_workers=2, collate_fn=Graph_collate)
-# #### generate random labels
-# labels = []
-# for batch_idx, graph in enumerate(train_graphs):
-#     for i in range(6):
-#         r = 5 - i
-#         print(batch_idx, r)
-#         sat, label = init_check(graph, batch_idx, radius = r)
-#         if sat == True:
-#             labels.append(torch.Tensor(label).unsqueeze(dim=0))
-#             break
-#         else:
-#             continue
-# labels = torch.cat(labels, dim=0)
-# torch.save(labels, './data/random_labels.pt')
+tmp_dataloader = torch.utils.data.DataLoader(train_set, batch_size=opt.batch_size, 
+                        shuffle=False, num_workers=2, collate_fn=Graph_collate)
+#### generate random labels
+labels = []
+for batch_idx, graph in enumerate(train_graphs):
+    for i in range(6):
+        r = 5 - i
+        print(batch_idx, r)
+        sat, label = init_check(graph, batch_idx, radius = r)
+        if sat == True:
+            labels.append(torch.Tensor(label).unsqueeze(dim=0))
+            break
+        else:
+            continue
+labels = torch.cat(labels, dim=0)
+torch.save(labels, './data/random_labels.pt')
 
 pseudo_labels = torch.load('./data/random_labels.pt')
 train_paths = torch.load('./data/train_paths.pt')
