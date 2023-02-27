@@ -8,6 +8,7 @@ pytorch
 networkx
 joblib
 z3-solver
+cython
 ```
 
 ### Usage
