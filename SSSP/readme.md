@@ -1,6 +1,7 @@
 ### Note 
 First run the following command to compile cython code. 
 > python3 setup.py build_ext --inplace 
+
 Then, generate the dataset by `data_gen.py`.
 
 ### Repository contents
