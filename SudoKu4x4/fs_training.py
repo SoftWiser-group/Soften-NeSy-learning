@@ -41,22 +41,21 @@ proj_index = {'1':[(0,0), (0,1)], '2': [(0,0), (1,0)], '3': [(1,0), (1,1)], '4':
 train_set = SudoKuDataset('train') 
 test_set = SudoKuDataset('test')
 
-# #### generate ground-truth labels
-# tmp_dataloader = torch.utils.data.DataLoader(train_set, batch_size=opt.batch_size, 
-#                         shuffle=False, num_workers=2)
+#### generate ground-truth labels
+tmp_dataloader = torch.utils.data.DataLoader(train_set, batch_size=opt.batch_size, 
+                        shuffle=False, num_workers=2)
 
-# #### generate random labels
-# labels = []
-# for (idx, data) in enumerate(tmp_dataloader):
-#     X = data['input']
-#     Y  = torch.zeros_like(data['label'])
-#     # Y[Y >= 5] = 0 # remove labels
-#     for (i, y) in enumerate(Y):
-#         print(idx, i)
-#         sat, sol = init_check(y.numpy())
-#         labels.append(torch.Tensor(sol).unsqueeze(dim=0))
-# labels = torch.cat(labels, dim=0)
-# torch.save(labels, './data/random_labels.pt')
+#### generate random labels
+labels = []
+for (idx, data) in enumerate(tmp_dataloader):
+    X = data['input']
+    Y  = torch.zeros_like(data['label'])
+    for (i, y) in enumerate(Y):
+        print(idx, i)
+        sat, sol = init_check(y.numpy())
+        labels.append(torch.Tensor(sol).unsqueeze(dim=0))
+labels = torch.cat(labels, dim=0)
+torch.save(labels, './data/random_labels.pt')
 
 pseudo_labels = torch.load('./data/random_labels.pt').long()
 # pseudo_labels = labels.clone()
